@@ -5,6 +5,8 @@ from src.scoring import calculate_grade
 from src.feedback import generate_feedback
 from src.agent_verifier import rescue_grade_if_needed
 
+import nltk
+
 def run_full_assessment(image_path, model_answer_text, max_marks=10):
     """
     Orchestrates the entire 6-phase pipeline end-to-end.
@@ -13,8 +15,14 @@ def run_full_assessment(image_path, model_answer_text, max_marks=10):
     results = {}
     
     # PHASE 1: OCR
-    raw_ocr = run_ocr_pipeline(image_path)
+    raw_ocr, ocr_conf = run_ocr_pipeline(image_path)
     results['raw_ocr'] = raw_ocr
+    results['ocr_confidence'] = ocr_conf
+    
+    # Calculate CER against the model answer (as pseudo ground truth)
+    ref_len = max(len(model_answer_text), 1)
+    cer = nltk.edit_distance(model_answer_text.lower(), raw_ocr.lower()) / ref_len
+    results['ocr_cer'] = cer
     
     # PHASE 2: NLP Cleaning
     nlp_results = process_student_answer(raw_ocr)

@@ -35,10 +35,11 @@ def main():
          
     # --- PHASE 1: OCR ---
     print("\n--- PHASE 1: OCR ---")
-    extracted_text = run_ocr_pipeline(image_path)
+    extracted_text, ocr_conf = run_ocr_pipeline(image_path)
     
     print("\n=== Raw Extracted Text ===")
     print("-" * 30)
+    print(f"Confidence: {ocr_conf*100:.1f}%")
     print(extracted_text)
     print("-" * 30)
     

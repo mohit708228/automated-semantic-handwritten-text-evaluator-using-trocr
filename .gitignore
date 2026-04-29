@@ -155,3 +155,10 @@ cython_debug/
 data/sample_images/temp_upload_img.*
 data/sample_images/temp_upload_key.pdf
 data/processed_images/
+
+# Large Model weights
+my_trocr_model/
+my_trocr_model_ft/
+*.zip
+*.safetensors
+*.bin

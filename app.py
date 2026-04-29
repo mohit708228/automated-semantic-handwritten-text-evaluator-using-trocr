@@ -67,6 +67,12 @@ if pdf_file and img_file:
             with col2:
                 st.metric(label="Similarity Index", value=f"{results['similarity_score']:.2f} / 1.00")
                 
+            col3, col4 = st.columns(2)
+            with col3:
+                st.metric(label="OCR Confidence", value=f"{(results.get('ocr_confidence', 0))*100:.1f}%")
+            with col4:
+                st.metric(label="Character Error Rate (CER)", value=f"{(results.get('ocr_cer', 0))*100:.1f}%")
+                
             st.markdown("### Feedback Summary")
             st.info(results['feedback'])
             
