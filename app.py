@@ -71,7 +71,7 @@ if pdf_file and img_file:
             with col3:
                 st.metric(label="OCR Confidence", value=f"{(results.get('ocr_confidence', 0))*100:.1f}%")
             with col4:
-                st.metric(label="Character Error Rate (CER)", value=f"{(results.get('ocr_cer', 0))*100:.1f}%")
+                st.metric(label="Answer Deviation", value=f"{(results.get('answer_deviation', 0))*100:.1f}%")
                 
             st.markdown("### Feedback Summary")
             st.info(results['feedback'])

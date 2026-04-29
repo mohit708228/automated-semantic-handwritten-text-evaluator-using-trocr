@@ -211,9 +211,12 @@ class TrOCRInferencer:
         # --- Confidence score ---
         score = 0.0
         if hasattr(outputs, 'sequences_scores') and outputs.sequences_scores is not None:
-            # Normalize by sequence length for a per-token probability
-            seq_len = max(len(generated_ids[0]) - 1, 1)  # exclude BOS token
-            score = torch.exp(outputs.sequences_scores[0] / seq_len).item()
+            # sequences_scores is ALREADY length-normalized by HuggingFace beam search:
+            #   score = sum(log_probs) / (length ^ length_penalty)
+            # With length_penalty=1.0, this is the average log-prob per token.
+            # Exponentiating gives the geometric mean of per-token probabilities.
+            raw_score = torch.exp(outputs.sequences_scores[0]).item()
+            score = min(max(raw_score, 0.0), 1.0)  # clamp to [0, 1]
         else:
             score = 1.0
 

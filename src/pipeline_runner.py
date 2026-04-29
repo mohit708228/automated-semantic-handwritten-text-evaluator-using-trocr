@@ -19,10 +19,13 @@ def run_full_assessment(image_path, model_answer_text, max_marks=10):
     results['raw_ocr'] = raw_ocr
     results['ocr_confidence'] = ocr_conf
     
-    # Calculate CER against the model answer (as pseudo ground truth)
+    # Character-level answer deviation: measures how different the OCR output
+    # is from the model answer at the character level (normalized edit distance).
+    # NOTE: This is NOT true CER (which requires ground-truth transcription of the
+    # handwritten image). It quantifies answer deviation, not OCR accuracy.
     ref_len = max(len(model_answer_text), 1)
-    cer = nltk.edit_distance(model_answer_text.lower(), raw_ocr.lower()) / ref_len
-    results['ocr_cer'] = cer
+    char_deviation = nltk.edit_distance(model_answer_text.lower(), raw_ocr.lower()) / ref_len
+    results['answer_deviation'] = min(char_deviation, 1.0)  # clamp to [0, 1]
     
     # PHASE 2: NLP Cleaning
     nlp_results = process_student_answer(raw_ocr)
